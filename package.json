@@ -1,0 +1,41 @@
+{
+  "name": "express-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "npm run build && node build/index.js",
+    "start:dev": "nodemon",
+    "build": "rimraf ./build && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.8",
+    "@types/express": "^4.17.8",
+    "@types/md5": "^2.2.1",
+    "@types/mongodb": "^3.5.25",
+    "@types/morgan": "^1.9.2",
+    "async": "^3.2.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "got": "^11.8.0",
+    "install": "^0.13.0",
+    "md5": "^2.3.0",
+    "mongodb": "^3.5.9",
+    "morgan": "^1.10.0",
+    "npm": "^6.14.8"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.14",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  }
+}
