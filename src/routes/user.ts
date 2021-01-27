@@ -21,6 +21,8 @@ router.post("/add", async (req, res) => {
     const new_user: any = await addUser<any>({
         _id: req.body.id,
         email: req.body.email,
+        household: "",
+        permissions: [],
         time_created: Date.now()
     });
     return res.json(getUpdateMessage(new_user));
