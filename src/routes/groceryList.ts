@@ -6,8 +6,8 @@ import {
     getAllGroceryItems, 
     getGroceryItemsByParams, 
     deleteGroceryItemById,
-} from '../../database/dbUtils';
-import { sendError, nameToMD5, getUpdateMessage } from '../../utils/utils';
+} from '../database/dbUtils';
+import { sendError, getUpdateMessage } from '../utils/utils';
 
 const router: Router = express.Router();
 
@@ -58,6 +58,4 @@ router.delete("/remove", async (req, res) => {
     return res.json(getUpdateMessage(deleted_grocery_item));
 });
 
-
-
-export const groceryListRouter: Router = router;
+export default router;

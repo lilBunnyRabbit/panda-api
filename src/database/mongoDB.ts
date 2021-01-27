@@ -7,7 +7,8 @@ let db: Db;
 export const collections = {
     TEST: "test",
     GROCERY_LIST: "grocery-list",
-    USERS: "users"
+    USERS: "users",
+    WHISHLIST: "wishlist"
 }
 
 export async function connectToDB() {

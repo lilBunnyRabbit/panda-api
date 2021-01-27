@@ -1,0 +1,29 @@
+{
+    "users": [
+        {
+            "_id": "101136506426970237579",
+            "email": "lilbunnyrabbit.dev@gmail.com",
+            "household": "test",
+            "permissions": [
+                "grocery_list",
+                "wishlist",
+                "game_dashboard"
+            ],
+            "time_created": 0
+        }
+    ],
+    "households": {
+        "_id": "test"
+    },
+    "permissions": [
+        { 
+            "_id": "grocery_list" 
+        },
+        { 
+            "_id": "wishlist" 
+        },
+        { 
+            "_id": "game_dashboard" 
+        }
+    ]
+}

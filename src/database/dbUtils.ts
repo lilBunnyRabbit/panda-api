@@ -78,3 +78,11 @@ export async function getUsers<T>(): Promise<T> {
 export async function deleteUserById<T>(_id: any): Promise<T> {
     return mongoDB.deleteData(mongoDB.collections.USERS, { _id }, false);
 }
+
+// WISHLIST
+export const wishlistDB = {
+    add: <T>(data: any): Promise<T> => mongoDB.insertData(mongoDB.collections.WHISHLIST, data),
+    getById: <T>(_id: any): Promise<T> => mongoDB.getData(mongoDB.collections.WHISHLIST, { _id }, false),
+    deleteById: <T>(_id: any): Promise<T> => mongoDB.deleteData(mongoDB.collections.WHISHLIST, { _id }, false),
+    getByParams: <T>(params: any): Promise<T> => mongoDB.getData(mongoDB.collections.WHISHLIST, params, true),
+}

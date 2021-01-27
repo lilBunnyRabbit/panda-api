@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
-import { addUser, getUserById } from '../../database/dbUtils';
-import { getUpdateMessage, sendError } from '../../utils/utils';
+import { addUser, getUserById } from '../database/dbUtils';
+import { getUpdateMessage, sendError } from '../utils/utils';
+
 const router: Router = express.Router();
 
 router.get("/get/:userId", async (req, res) => {
@@ -25,4 +26,4 @@ router.post("/add", async (req, res) => {
     return res.json(getUpdateMessage(new_user));
 });
 
-export const userRouter: Router = router;
+export default router;

@@ -5,8 +5,7 @@ import logger from "morgan";
 import cors from 'cors';
 import path from "path";
 import { Server } from "http";
-import { groceryListRouter } from "./routes/grocery-list/groceryList";
-import { userRouter } from "./routes/user/user";
+import { routes } from "./routes";
 
 export function startApp(): Server {
     const app: Express = express();
@@ -15,9 +14,7 @@ export function startApp(): Server {
     addRoutes(app);
     errorHandler(app);
 
-    return app.listen(process.env.PORT, () => {
-        return console.log(`Listening at http://localhost:${process.env.PORT}`);
-    });
+    return app.listen(process.env.PORT, () => console.log(`Listening at http://localhost:${process.env.PORT}`));
 }
 
 function addConfig(app: Express) {
@@ -30,8 +27,7 @@ function addConfig(app: Express) {
 
 function addRoutes(app: Express) {
     app.use(express.static('public'));
-    app.use("/grocery-list", groceryListRouter);
-    app.use("/user", userRouter);
+    routes.forEach((route) => app.use(route.path, route.router));
 }
 
 function errorHandler(app: Express) {
