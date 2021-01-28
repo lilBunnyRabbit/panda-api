@@ -10,13 +10,13 @@
 
 | **GET** | `/get/:user_id` |
 | :- | :- |
-| **RESPONSE** | [User](../objects.md#user) or [Error](../objects.md#Error) |
+| **RESPONSE** | [User](objects.md#user) or [Error](objects.md#Error) |
 
 | **POST** | `/add` |
 | :- | :- |
 | `id` | Google ID |
 | `email` | Gmail |
-| **RESPONSE** | [Database](../objects.md#database-response) or [Error](../objects.md#error) |
+| **RESPONSE** | [Database](objects.md#database-response) or [Error](objects.md#error) |
 
 ---------------------------------------------------------------------------------------------------
 
@@ -24,11 +24,11 @@
 
 | **GET** | `/all` - temporary |
 | :- | :- |
-| **RESPONSE** | [Grocery Item](../objects.md#grocery-list)[ ] |
+| **RESPONSE** | [Grocery Item](objects.md#grocery-list)[ ] |
 
 | **GET** | `/list/:household_id` |
 | :- | :- |
-| **RESPONSE** | [Grocery Item](../objects.md#grocery-list)[ ] or [Error](../objects.md#error) |
+| **RESPONSE** | [Grocery Item](objects.md#grocery-list)[ ] or [Error](objects.md#error) |
 
 | **POST** | `/add` |
 | :- | :- |
@@ -36,17 +36,17 @@
 | `username` | Username of the user who added the item |
 | `household` | Household ID |
 | `comment` | **[optional]** comment for the item |
-| **RESPONSE** | [Database](../objects.md#database-response) |
+| **RESPONSE** | [Database](objects.md#database-response) |
 
 | **POST** | `/auto-complete` |
 | :- | :- |
 | `input` | Name input |
-| **RESPONSE** | [Grocery Item](../objects.md#grocery-list)[ ] or [Error](../objects.md#error) |
+| **RESPONSE** | [Grocery Item](objects.md#grocery-list)[ ] or [Error](objects.md#error) |
 
 | **DELETE** | `/remove` |
 | :- | :- |
 | `id` | Item ID |
-| **RESPONSE** | [Database](../objects.md#database-response) or [Error](../objects.md#error) |
+| **RESPONSE** | [Database](objects.md#database-response) or [Error](objects.md#error) |
 
 ---------------------------------------------------------------------------------------------------
 
@@ -56,13 +56,13 @@
 | :- | :- |
 | `name` | Name of the item |
 | `user_id` | ID of the user who added the item | 
-| **RESPONSE** | [Database](../objects.md#database-response) or [Error](../objects.md#error) |
+| **RESPONSE** | [Database](objects.md#database-response) or [Error](objects.md#error) |
 
 | **DELETE** | `/remove` |
 | :- | :- |
 | `id` | Item ID |
-| **RESPONSE** | [Database](../objects.md#database-response) or [Error](../objects.md#error) |
+| **RESPONSE** | [Database](objects.md#database-response) or [Error](objects.md#error) |
 
 | **GET** | `/list/:user_id` |
 | :- | :- |
-| **RESPONSE** | [Wishlist Item](../objects.md#wishlist)[ ] or [Error](../objects.md#error) |
+| **RESPONSE** | [Wishlist Item](objects.md#wishlist)[ ] or [Error](objects.md#error) |
