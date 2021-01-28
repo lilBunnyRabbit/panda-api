@@ -1,11 +1,3 @@
-/*
-{
-    _id: ObjectId,
-    name: string,
-    user_id: string,
-    time_created: number
-}
-*/
 import express, { Router } from 'express';
 import { getUpdateMessage, sendError } from '../utils/utils';
 import { ObjectId } from 'mongodb';

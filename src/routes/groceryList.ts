@@ -34,9 +34,9 @@ router.get("/all", async (req, res) => {
     return res.json(grocery_items || []);
 });
 
-router.get("/list/:household", async (req, res) => {
-    if(!req?.params.household) return sendError(res, "Missing household");
-    const grocery_items = await getGroceryItemsByParams({ household: req.params.household });
+router.get("/list/:household_id", async (req, res) => {
+    if(!req?.params.household_id) return sendError(res, "Missing household_id");
+    const grocery_items = await getGroceryItemsByParams({ household: req.params.household_id });
     return res.json(grocery_items || []);
 });
 

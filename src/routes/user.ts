@@ -4,9 +4,9 @@ import { getUpdateMessage, sendError } from '../utils/utils';
 
 const router: Router = express.Router();
 
-router.get("/get/:userId", async (req, res) => {
-    if(!req.params.userId) return sendError(res, "Mising params");
-    const user = await getUserById(req.params.userId);
+router.get("/get/:user_id", async (req, res) => {
+    if(!req.params.user_id) return sendError(res, "Mising params");
+    const user = await getUserById(req.params.user_id);
     if(!user) return sendError(res, "User doesn't exist");
     return res.json(user);
 });
