@@ -63,6 +63,10 @@ export async function getUserById<T>(_id: any): Promise<T> {
     return mongoDB.getData(mongoDB.collections.USERS, { _id }, false);
 }
 
+export async function getAllUsers<T>(): Promise<T> {
+    return mongoDB.getData(mongoDB.collections.USERS, {}, true);
+}
+
 export async function updateUser<T>(_id: any, data: any): Promise<T> {
     return mongoDB.updateData(mongoDB.collections.USERS, { _id }, data, false);
 }
@@ -85,4 +89,9 @@ export const wishlistDB = {
     getById: <T>(_id: any): Promise<T> => mongoDB.getData(mongoDB.collections.WHISHLIST, { _id }, false),
     deleteById: <T>(_id: any): Promise<T> => mongoDB.deleteData(mongoDB.collections.WHISHLIST, { _id }, false),
     getByParams: <T>(params: any): Promise<T> => mongoDB.getData(mongoDB.collections.WHISHLIST, params, true),
+}
+
+// PERMISSIONS
+export const permissionsDB = {
+    all: async <T>(): Promise<T> => mongoDB.getData(mongoDB.collections.PERMISSIONS, {}, true)
 }

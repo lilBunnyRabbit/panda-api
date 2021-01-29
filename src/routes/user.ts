@@ -1,31 +1,77 @@
 import express, { Router } from 'express';
-import { addUser, getUserById } from '../database/dbUtils';
-import { getUpdateMessage, sendError } from '../utils/utils';
+import { addUser, getUserById, getAllUsers, updateUser } from '../database/dbUtils';
+import { checkParams, getUpdateMessage, sendError } from '../utils/utils';
 
 const router: Router = express.Router();
 
-router.get("/get/:user_id", async (req, res) => {
-    if(!req.params.user_id) return sendError(res, "Mising params");
-    const user = await getUserById(req.params.user_id);
+router.get("/get/:user_id", getById);
+router.get("/all", getAll);
+router.post("/add", add);
+router.put("/update/:user_id", updateById);
+
+export default router;
+
+/* HANDLERS */
+
+const validDataCheck: {[key: string]: Function} = {
+    name: (value: any) => typeof value == "string",
+    household: (value: any) => typeof value == "string",
+    permissions: (value: any) => {
+        if(!Array.isArray(value)) return false;
+        for(const v of value) {
+            if(typeof v != "string") return false;
+        }
+        return true;
+    }
+}
+
+async function getById({ params }: any, res: any) {
+    if(!checkParams(params, res, [ "user_id" ])) return;
+    
+    const user = await getUserById(params.user_id);
     if(!user) return sendError(res, "User doesn't exist");
+
     return res.json(user);
-});
+}
 
-router.post("/add", async (req, res) => {
-    if(!req?.body?.id) return sendError(res, "Missing id");
-    if(!req?.body?.email) return sendError(res, "Missing email");
+async function getAll({}, res: any) {
+    const users = await getAllUsers();
+    console.log({ users });
+    
+    return res.json(users || []);
+}
 
-    if(await getUserById(req.body.id)) return sendError(res, "User exist");
+async function add({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "id", "name", "email" ])) return;
+    if(await getUserById(body.id)) return sendError(res, "User exist");
 
-
-    const new_user: any = await addUser<any>({
-        _id: req.body.id,
-        email: req.body.email,
+    const data = {
+        _id: body.id,
+        name: body.name,
+        email: body.email,
         household: "",
         permissions: [],
         time_created: Date.now()
-    });
-    return res.json(getUpdateMessage(new_user));
-});
+    }
 
-export default router;
+    return res.json(getUpdateMessage(await addUser<any>(data)));
+}
+
+async function updateById({ body, params }: any, res: any) {
+    if(!checkParams(params, res, [ "user_id" ])) return;
+    if(!await getUserById(params.user_id)) return sendError(res, "User doesnt exist");
+
+    const data: any = {};
+
+    for(const key in body) {
+        if(key in validDataCheck && validDataCheck[key](body[key])) {
+            data[key] = body[key];
+        }
+    }
+
+    if(Object.keys(data).length == 0) return sendError(res, "Bad data");
+
+    return res.json(getUpdateMessage(
+        await updateUser<any>(params.user_id, data)
+    ));
+}

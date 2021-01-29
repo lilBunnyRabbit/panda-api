@@ -1,38 +1,47 @@
 import express, { Router } from 'express';
-import { getUpdateMessage, sendError } from '../utils/utils';
+import { checkParams, getUpdateMessage, sendError } from '../utils/utils';
 import { ObjectId } from 'mongodb';
 import { wishlistDB } from '../database/dbUtils';
 
 const router: Router = express.Router();
 
-router.post("/add", async (req, res) => {
-    if(!req?.body?.name) return sendError(res, "Missing name");
-    if(!req?.body?.user_id) return sendError(res, "Missing user_id");
+router.get("/list/:user_id", listByUser);
+router.post("/add", add);
+router.delete("/remove", remove);
 
-    const update_data: any = {
-        name: req.body.name,
-        user_id: req.body.user_id,
+export default router;
+
+/* HANDLERS */
+
+async function listByUser({ params }: any, res: any) {
+    if(!checkParams(params, res, [ "user_id" ])) return;
+
+    const wishlist_items = await wishlistDB.getByParams<any[]>({ user_id: params.user_id });
+    return res.json(wishlist_items || []);
+}
+
+async function add({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "name", "user_id" ])) return;
+
+    const data: any = {
+        name: body.name,
+        user_id: body.user_id,
         time_created: Date.now()
     };
 
-    const new_wishlist_item: any = await wishlistDB.add<any>(update_data);
-    return res.json(getUpdateMessage(new_wishlist_item));
-});
+    return res.json(getUpdateMessage(
+        await wishlistDB.add<any>(data)
+    ));
+}
 
-router.delete("/remove", async (req, res) => {
-    if(!req.body?.id) return sendError(res, "Missing id");
-    if(!ObjectId.isValid(req.body.id)) return sendError(res, "Bad id");
-    const _id = new ObjectId(req.body.id);
-    const wishlist_item = await wishlistDB.getById<any>(_id);
-    if(!wishlist_item) return sendError(res, "That wishlist item doesn't exist");
-    const deleted_wishlist_item = await wishlistDB.deleteById<any>(wishlist_item._id);
-    return res.json(getUpdateMessage(deleted_wishlist_item));
-});
+async function remove({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "id" ])) return;
+    if(!ObjectId.isValid(body.id)) return sendError(res, "Bad id");
 
-router.get("/list/:user_id", async (req, res) => {
-    if(!req?.params.user_id) return sendError(res, "Missing user_id");
-    const wishlist_items = await wishlistDB.getByParams({ user_id: req.params.user_id });
-    return res.json(wishlist_items || []);
-});
+    const _id = new ObjectId(body.id);
+    if(!await wishlistDB.getById<any>(_id)) return sendError(res, "That wishlist item doesn't exist");
 
-export default router;
+    return res.json(getUpdateMessage(
+        await wishlistDB.deleteById<any>(_id)
+    ));
+}

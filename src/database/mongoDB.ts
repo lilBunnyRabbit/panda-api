@@ -1,14 +1,16 @@
 import { MongoClient, Db } from 'mongodb';
 import assert from 'assert';
+import default_data from './default.json';
 
 let client: MongoClient;
-let db: Db;
+let db: Db & { system?: any };
 
 export const collections = {
     TEST: "test",
     GROCERY_LIST: "grocery-list",
     USERS: "users",
-    WHISHLIST: "wishlist"
+    WHISHLIST: "wishlist",
+    PERMISSIONS: "permissions"
 }
 
 export async function connectToDB() {
@@ -17,12 +19,26 @@ export async function connectToDB() {
 
     client = new MongoClient(process.env.MONGODB_URL, { useUnifiedTopology: true });
 
-    client.connect(function(err) {
+    client.connect((err) => {
         assert.strictEqual(null, err);
         console.log("Successfully connected to the MongoDb database");
+        return insertDefault();
     });
 
     db = client.db(process.env.DB_NAME);
+}
+
+function insertDefault() {
+    for(const collection in default_data) {
+        db.listCollections({ name: collection }).next((err, info) => {
+            if(info) return;
+            for(const data of (<any>default_data)[collection]) {
+                insertData(collection, data).then(() => {
+                    console.log(`Added to ${collection}: ${JSON.stringify(data, null, 2)}`);
+                })
+            }
+        });
+    }
 }
 
 export function insertData(collection_name: string, data: any[] | any): Promise<any> {

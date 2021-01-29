@@ -43,6 +43,7 @@
 ```ts
 {
     _id: string,
+    name: string,
     email: string,
     household: string,
     permissions: string[],
@@ -53,7 +54,8 @@
 | Key | Value |
 |:-|:-
 | `_id` | Google ID |
-| `email` | gmail | 
+| `name` | Default is gmail username |
+| `email` | Gmail | 
 | `household` | ID of the household | 
 | `permissions` | list of permission IDs | 
 | `time_created` | EPOCH when the user was created | 

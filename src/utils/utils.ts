@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import md5 from 'md5';
 
 export function sendError(res: any, message: string) {
@@ -16,4 +17,14 @@ export function getUpdateMessage(output: any) {
     return {
         ok: !!(output?.result?.ok == 1)
     }
+}
+
+export function checkParams(input: any = {},  res: any, params: string[]): boolean {
+    for(const param of params) {
+        if(!input[param]) {
+            sendError(res, `Missing ${param}`);
+            return false;
+        }
+    }
+    return true;
 }

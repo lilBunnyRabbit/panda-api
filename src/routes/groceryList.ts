@@ -7,55 +7,66 @@ import {
     getGroceryItemsByParams, 
     deleteGroceryItemById,
 } from '../database/dbUtils';
-import { sendError, getUpdateMessage } from '../utils/utils';
+import { sendError, getUpdateMessage, checkParams } from '../utils/utils';
 
 const router: Router = express.Router();
 
-router.post("/add", async (req, res) => {
-    if(!req?.body?.name) return sendError(res, "Missing name");
-    if(!req?.body?.username) return sendError(res, "Missing username");
-    if(!req?.body?.household) return sendError(res, "Missing household");
+router.get("/all", getAll);
+router.get("/list/:household_id", listByHousehold);
+router.post("/add", add);
+router.post("/auto-complete", autoComplete);
+router.delete("/remove", remove);
 
-    const update_data: any = {
-        name: req.body.name,
-        username: req.body.username,
-        household: req.body.household,
+export default router;
+
+/* HANDLERS */
+
+async function getAll({}, res: any) {
+    const grocery_items = await getAllGroceryItems();
+    return res.json(grocery_items || []);
+}
+
+async function listByHousehold({ params }: any, res: any) {
+    if(!checkParams(params, res, [ "household_id" ])) return;
+
+    const grocery_items = await getGroceryItemsByParams({ household: params.household_id });
+    return res.json(grocery_items || []);
+}
+
+async function add({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "name", "username", "household" ])) return;
+
+    const data: any = {
+        name: body.name,
+        username: body.username,
+        household: body.household,
         time_created: Date.now()
     };
 
-    if(req?.body?.comment) update_data.comment = req.body.comment;
+    if(body?.comment) data.comment = body.comment;
 
-    const new_grocery_item: any = await addGroceryItem<any>(update_data);
-    return res.json(getUpdateMessage(new_grocery_item));
-});
+    return res.json(getUpdateMessage(
+        await addGroceryItem<any>(data)
+    ));
+}
 
-router.get("/all", async (req, res) => {
-    const grocery_items = await getAllGroceryItems();
-    return res.json(grocery_items || []);
-});
+async function autoComplete({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "input" ])) return;
 
-router.get("/list/:household_id", async (req, res) => {
-    if(!req?.params.household_id) return sendError(res, "Missing household_id");
-    const grocery_items = await getGroceryItemsByParams({ household: req.params.household_id });
-    return res.json(grocery_items || []);
-});
-
-router.post("/auto-complete", async (req, res) => {
-    if(!req.body.input) return sendError(res, "Missing input");
     const grocery_items = await getGroceryItemsByParams({
-        name: new RegExp(req.body.input, "i")
+        name: new RegExp(body.input, "i")
     });
-    return res.json(grocery_items);
-});
+    return res.json(grocery_items || []);
+}
 
-router.delete("/remove", async (req, res) => {
-    if(!req.body?.id) return sendError(res, "Missing id");
-    if(!ObjectId.isValid(req.body.id)) return sendError(res, "Bad id");
-    const _id = new ObjectId(req.body.id);
-    const grocery_item = await getGroceryItemById<any>(_id);
-    if(!grocery_item) return sendError(res, "That grocery item doesn't exist");
-    const deleted_grocery_item = await deleteGroceryItemById<any>(grocery_item._id);
-    return res.json(getUpdateMessage(deleted_grocery_item));
-});
+async function remove({ body }: any, res: any) {
+    if(!checkParams(body, res, [ "id" ])) return;
+    if(!ObjectId.isValid(body.id)) return sendError(res, "Bad id");
 
-export default router;
+    const _id = new ObjectId(body.id);
+    if(!await getGroceryItemById<any>(_id)) return sendError(res, "That grocery item doesn't exist");
+    
+    return res.json(getUpdateMessage(
+        await deleteGroceryItemById<any>(_id)
+    ));
+}

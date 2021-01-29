@@ -4,6 +4,7 @@ import { Router } from "express";
 import userRouter from "./routes/user";
 import groceryListRouter from "./routes/groceryList";
 import wishlistRouter from "./routes/wishlist";
+import permissionsRouter from "./routes/permissions";
 
 export type Route = {
     path: string,
@@ -22,5 +23,9 @@ export const routes: Route[] = [
     {
         path: "/wishlist",
         router: wishlistRouter
+    },
+    {
+        path: "/permissions",
+        router: permissionsRouter
     },
 ];
