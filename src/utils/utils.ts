@@ -21,7 +21,7 @@ export function getUpdateMessage(output: any) {
 
 export function checkParams(input: any = {},  res: any, params: string[]): boolean {
     for(const param of params) {
-        if(!input[param]) {
+        if(!(param in input)) {
             sendError(res, `Missing ${param}`);
             return false;
         }

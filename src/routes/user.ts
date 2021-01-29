@@ -5,6 +5,7 @@ import { checkParams, getUpdateMessage, sendError } from '../utils/utils';
 const router: Router = express.Router();
 
 router.get("/get/:user_id", getById);
+router.get("/get/household/:household_id", getByHouseholdId);
 router.get("/all", getAll);
 router.post("/add", add);
 router.put("/update/:user_id", updateById);
@@ -32,6 +33,13 @@ async function getById({ params }: any, res: any) {
     if(!user) return sendError(res, "User doesn't exist");
 
     return res.json(user);
+}
+
+async function getByHouseholdId({ params }: any, res: any) {
+    if(!checkParams(params, res, [ "household_id" ])) return;
+    
+    const users = await UsersDB.getByParams({ household: params.household_id }) || [];
+    return res.json(users);
 }
 
 async function getAll({}, res: any) {
