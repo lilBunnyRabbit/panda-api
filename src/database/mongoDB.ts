@@ -3,14 +3,15 @@ import assert from 'assert';
 import default_data from './default.json';
 
 let client: MongoClient;
-let db: Db & { system?: any };
+let db: Db;
 
 export const collections = {
     TEST: "test",
     GROCERY_LIST: "grocery-list",
     USERS: "users",
     WHISHLIST: "wishlist",
-    PERMISSIONS: "permissions"
+    PERMISSIONS: "permissions",
+    HOUSEHOLDS: "households"
 }
 
 export async function connectToDB() {
@@ -106,5 +107,17 @@ export function deleteData(collection_name: string, filters: any, isMany: boolea
                 resolve(output_data);
             }); 
         }
+    })
+}
+
+export function countData(collection_name: string, filters: any, output_name: string): Promise<any[] | any> {
+    return new Promise((resolve, reject) => {
+        db.collection(collection_name).aggregate([
+            { $match: filters },
+            { $count: output_name }
+        ]).toArray(function(err, output_data) {
+            if(err) reject(err);
+            resolve(output_data);
+        });
     })
 }

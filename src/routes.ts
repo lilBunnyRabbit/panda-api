@@ -5,6 +5,7 @@ import userRouter from "./routes/user";
 import groceryListRouter from "./routes/groceryList";
 import wishlistRouter from "./routes/wishlist";
 import permissionsRouter from "./routes/permissions";
+import householdsRouter from "./routes/households";
 
 export type Route = {
     path: string,
@@ -28,4 +29,8 @@ export const routes: Route[] = [
         path: "/permissions",
         router: permissionsRouter
     },
+    {
+        path: "/households",
+        router: householdsRouter
+    }
 ];

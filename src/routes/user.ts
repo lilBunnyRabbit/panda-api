@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { addUser, getUserById, getAllUsers, updateUser } from '../database/dbUtils';
+import { UsersDB } from '../database/dbUtils';
 import { checkParams, getUpdateMessage, sendError } from '../utils/utils';
 
 const router: Router = express.Router();
@@ -28,22 +28,20 @@ const validDataCheck: {[key: string]: Function} = {
 async function getById({ params }: any, res: any) {
     if(!checkParams(params, res, [ "user_id" ])) return;
     
-    const user = await getUserById(params.user_id);
+    const user = await UsersDB.getById(params.user_id);
     if(!user) return sendError(res, "User doesn't exist");
 
     return res.json(user);
 }
 
 async function getAll({}, res: any) {
-    const users = await getAllUsers();
-    console.log({ users });
-    
+    const users = await UsersDB.getAll();
     return res.json(users || []);
 }
 
 async function add({ body }: any, res: any) {
     if(!checkParams(body, res, [ "id", "name", "email" ])) return;
-    if(await getUserById(body.id)) return sendError(res, "User exist");
+    if(await UsersDB.getById(body.id)) return sendError(res, "User exist");
 
     const data = {
         _id: body.id,
@@ -54,12 +52,12 @@ async function add({ body }: any, res: any) {
         time_created: Date.now()
     }
 
-    return res.json(getUpdateMessage(await addUser<any>(data)));
+    return res.json(getUpdateMessage(await UsersDB.add(data)));
 }
 
 async function updateById({ body, params }: any, res: any) {
     if(!checkParams(params, res, [ "user_id" ])) return;
-    if(!await getUserById(params.user_id)) return sendError(res, "User doesnt exist");
+    if(!await UsersDB.getById(params.user_id)) return sendError(res, "User doesnt exist");
 
     const data: any = {};
 
@@ -72,6 +70,6 @@ async function updateById({ body, params }: any, res: any) {
     if(Object.keys(data).length == 0) return sendError(res, "Bad data");
 
     return res.json(getUpdateMessage(
-        await updateUser<any>(params.user_id, data)
+        await UsersDB.updateById(params.user_id, data)
     ));
 }
