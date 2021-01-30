@@ -21,11 +21,11 @@ async function getAll({}, res: any) {
 async function add({ body }: any, res: any) {
     if(!checkParams(body, res, [ "name" ])) return;
 
-    const exists: any[] = await PermissionsDB.getByParams({ name: new RegExp(body.name, "i") }) || [];
-    if(exists.length > 0) return sendError(res, "Permission exists");
+    const _id = body.name.replace(/ /g, "_").toLowerCase();
+    if(await PermissionsDB.getById(_id)) return sendError(res, "Permission exists");
 
     const data = {
-        _id: body.name.replace(/ /g, "_").toLowerCase(),
+        _id,
         name: body.name,
         time_created: Date.now()
     }

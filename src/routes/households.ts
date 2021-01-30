@@ -35,11 +35,11 @@ async function getAllWithUserCount({}, res: any) {
 async function add({ body }: any, res: any) {
     if(!checkParams(body, res, [ "name" ])) return;
 
-    const exists: any[] = await HouseholdsDB.getByParams({ name: new RegExp(body.name, "i") }) || [];
-    if(exists.length > 0) return sendError(res, "Household exists");
+    const _id = body.name.replace(/ /g, "_").toLowerCase();
+    if(await HouseholdsDB.getById(_id)) return sendError(res, "Household exists");
 
     const data = {
-        _id: body.name.replace(/ /g, "_").toLowerCase(),
+        _id,
         name: body.name,
         time_created: Date.now()
     }
